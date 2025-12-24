@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIDBLOX – Roblox Accounts</title>
+
+<style>
+:root{
+  --bg:#0e1117;
+  --card:#161b22;
+  --border:#242b35;
+  --text:#e6edf3;
+  --price:#2ecc71;
+  --btn:#1877f2;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family: system-ui;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* TOP PANEL */
+.top-panel{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:var(--bg);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+}
+
+.logo{
+  font-weight:800;
+  letter-spacing:1px;
+  font-size:18px;
+}
+
+.logo span{
+  color:var(--price);
+}
+
+.filters{
+  display:flex;
+  gap:6px;
+}
+
+.filters button{
+  background:#1f2630;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:12px;
+}
+
+/* CONTAINER */
+.container{
+  max-width:420px;
+  width:100%;
+  margin:0 auto;
+  padding:14px;
+  text-align:center;
+  font-size:14px;
+  color:var(--muted,#9ba3af);
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP PANEL -->
+<div class="top-panel">
+  <div class="logo">MID<span>BLOX</span></div>
+  <div class="filters">
+    <button onclick="setFilter('all')">All</button>
+    <button onclick="setFilter(20000)">≤20k</button>
+    <button onclick="setFilter(50000)">20k–50k</button>
+    <button onclick="setFilter(999999)">50k+</button>
+  </div>
+</div>
+
+<div class="container" id="list">
+  <p>Одоогоор авах боломжтой аккаунт байхгүй байна.</p>
+</div>
+
+<script>
+function setFilter(v){
+  // Card хоосон тул ямар ч өөрчлөлтгүй
+  document.getElementById("list").innerHTML = "<p>Одоогоор авах боломжтой аккаунт байхгүй байна.</p>";
+}
+</script>
+
+</body>
+</html>
