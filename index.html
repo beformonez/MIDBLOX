@@ -67,10 +67,87 @@ body{
   width:100%;
   margin:0 auto;
   padding:14px;
-  text-align:center;
-  font-size:14px;
-  color:var(--muted,#9ba3af);
 }
+
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:16px;
+}
+
+.slider{
+  position:relative;
+  overflow:hidden;
+  border-radius:10px;
+  background:#000;
+}
+
+.slides{
+  display:flex;
+  transition:transform .25s ease-out;
+}
+
+.slides img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  background:#000;
+  user-select:none;
+  pointer-events:none;
+}
+
+.username{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:8px;
+}
+
+.copy-btn{
+  background:#2a313c;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:12px;
+}
+
+.price{
+  font-size:18px;
+  font-weight:600;
+  color:var(--price);
+  margin:6px 0 8px;
+}
+
+.fb-btn{
+  display:block;
+  text-align:center;
+  background:var(--btn);
+  color:#fff;
+  padding:10px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:14px;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#2ecc71;
+  color:#000;
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:13px;
+  opacity:0;
+  transition:.2s;
+}
+.toast.show{opacity:1;}
 </style>
 </head>
 
@@ -87,15 +164,99 @@ body{
   </div>
 </div>
 
-<div class="container" id="list">
-  <p>Одоогоор авах боломжтой аккаунт байхгүй байна.</p>
-</div>
+<div class="container" id="list"></div>
+
+<div class="toast" id="toast">Copied</div>
 
 <script>
-function setFilter(v){
-  // Card хоосон тул ямар ч өөрчлөлтгүй
-  document.getElementById("list").innerHTML = "<p>Одоогоор авах боломжтой аккаунт байхгүй байна.</p>";
+const FB_PAGE = "https://www.facebook.com/messages/t/YOUR_PAGE_NAME";
+
+/* ✅ REAL ACCOUNT ONLY */
+const accounts = [
+  {
+    username: "senzu90792",
+    price: 1000,
+    images: [
+      "https://i.ibb.co/4RnTzwyb/Messenger-creation-C700-D518-2925-4-D0-D-8779-7446-B9-FC2-D40.jpg"
+    ]
+  }
+];
+
+let filter="all";
+
+function render(){
+  const list=document.getElementById("list");
+  list.innerHTML="";
+
+  accounts.filter(acc=>{
+    if(filter==="all") return true;
+    if(filter===20000) return acc.price<=20000;
+    if(filter===50000) return acc.price>20000 && acc.price<=50000;
+    return acc.price>50000;
+  }).forEach((acc,i)=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <div class="slider">
+        <div class="slides">
+          ${acc.images.map(img=>`<img src="${img}">`).join("")}
+        </div>
+      </div>
+
+      <div class="username">
+        <span id="u${i}">${acc.username}</span>
+        <button class="copy-btn" onclick="copyUser('u${i}')">Copy</button>
+      </div>
+
+      <div class="price">${acc.price.toLocaleString()}₮</div>
+
+      <a class="fb-btn" href="${FB_PAGE}" target="_blank">
+        💬 Facebook-аар холбогдох
+      </a>
+    `;
+
+    list.appendChild(card);
+
+    /* SWIPE + RUBBER EFFECT (1 image safe) */
+    const slider = card.querySelector(".slider");
+    const slides = card.querySelector(".slides");
+    let startX = 0;
+    let dragging = false;
+
+    slider.addEventListener("touchstart", e=>{
+      dragging=true;
+      startX=e.touches[0].clientX;
+      slides.style.transition="none";
+    });
+
+    slider.addEventListener("touchmove", e=>{
+      if(!dragging) return;
+      const dx = e.touches[0].clientX - startX;
+      slides.style.transform = `translateX(${dx*0.15}px)`;
+    });
+
+    slider.addEventListener("touchend", ()=>{
+      dragging=false;
+      slides.style.transition="transform .25s ease-out";
+      slides.style.transform = `translateX(0)`;
+    });
+  });
 }
+
+function setFilter(v){
+  filter=v;
+  render();
+}
+
+function copyUser(id){
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  const t=document.getElementById("toast");
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),900);
+}
+
+render();
 </script>
 
 </body>
